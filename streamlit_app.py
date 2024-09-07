@@ -9,4 +9,4 @@ st.write(
 
 input_text = st.text_input("Escribe tu consulta en lenguaje natural:")
 
-openai.api_key = st.secrets["openai"]["api_key"]
+#openai.api_key = st.secrets["openai"]["api_key"]
