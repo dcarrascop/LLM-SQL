@@ -1,41 +1,53 @@
 import streamlit as st
+import sqlite3
 import requests
 import os
-from sqlalchemy import create_engine, text
 import pandas as pd
 
-# URL to your database file
+# Database URL and local file path
 db_url = 'https://uccl0-my.sharepoint.com/:u:/r/personal/di_carrasco_uc_cl/Documents/licencias.db?csf=1&web=1&e=JhjWnN'
 db_file = 'licencias.db'
 
-# Function to download the file
+# Function to download the SQLite database
 def download_file(url, filename):
     try:
         response = requests.get(url)
-        response.raise_for_status()  # Raise an error for bad status codes
-        with open(filename, 'wb') as file:
-            file.write(response.content)
-        st.success(f"Downloaded {filename} successfully!")
+        response.raise_for_status()
+        with open(filename, 'wb') as f:
+            f.write(response.content)
+        st.success(f"Database file {filename} downloaded successfully.")
     except Exception as e:
         st.error(f"Error downloading the file: {e}")
 
-# Check if the database file exists, else download it
+# Download the database if it doesn't exist
 if not os.path.exists(db_file):
-    st.info("Downloading the database file...")
+    st.info("Downloading database...")
     download_file(db_url, db_file)
 
-# Connect to the SQLite database
-if os.path.exists(db_file):
-    try:
-        engine = create_engine(f'sqlite:///{db_file}')
-        st.write(f"Connected to the database {db_file} successfully.")
+# Function to create a connection to SQLite
+@st.cache_resource  # Cache the connection
+def init_connection():
+    return sqlite3.connect(db_file)
 
-        # Sample query to show the first 5 records from a table
-        with engine.connect() as connection:
-            result = connection.execute(text("SELECT * FROM licencias LIMIT 5"))
-            df = pd.DataFrame(result.fetchall(), columns=result.keys())
-            st.write(df)
-    except Exception as e:
-        st.error(f"Error connecting to the database: {e}")
-else:
-    st.error("Database file not found.")
+# Initialize the connection
+conn = init_connection()
+
+# Function to run a SQL query
+@st.cache_data  # Cache the results
+def run_query(query):
+    df = pd.read_sql_query(query, conn)
+    return df
+
+# Test Query
+query = "SELECT * FROM licencias LIMIT 5"
+
+# Display data
+try:
+    st.write("Running query...")
+    df = run_query(query)
+    st.dataframe(df)
+except Exception as e:
+    st.error(f"Error executing the query: {e}")
+
+# Close the connection (optional)
+# conn.close()
