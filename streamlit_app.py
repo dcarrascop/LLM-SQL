@@ -27,6 +27,12 @@ if not os.path.exists(db_path):
 # Crear conexión con la base de datos
 engine = create_engine(f'sqlite:///{db_path}')
 
+# Verificar si la tabla 'licencias' existe antes de inicializar SQLDatabase
+with engine.connect() as connection:
+    result = connection.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = result.fetchall()
+    st.write("Tablas en la base de datos:", tables)
+
 # Configurar la clave API de OpenAI desde secrets
 openai_api_key = st.secrets["openai"]["api_key"]
 openai.api_key = openai_api_key
