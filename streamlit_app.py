@@ -16,3 +16,15 @@ if os.path.exists(db_file):
     st.write(f"Tamaño del archivo: {os.path.getsize(db_file)} bytes")
 else:
     st.error("El archivo no existe.")
+
+try:
+    engine = create_engine(f'sqlite:///{db_file}')
+    with engine.connect() as connection:
+        result = connection.execute(text("SELECT name FROM sqlite_master WHERE type='table';"))
+        tables = result.fetchall()
+        if tables:
+            st.write("Tablas disponibles en la base de datos:", tables)
+        else:
+            st.error("No se encontraron tablas en la base de datos.")
+except Exception as e:
+    st.error(f"Error al conectar con la base de datos: {e}")
