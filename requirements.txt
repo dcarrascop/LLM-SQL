@@ -1,2 +1,8 @@
 streamlit
+sqlalchemy
+pandas
 openai
+llama_index
+python-dotenv
+matplotlib
+plotly
