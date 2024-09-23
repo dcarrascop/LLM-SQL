@@ -29,7 +29,7 @@ engine = create_engine(f'sqlite:///{db_path}')
 
 # Verificar si la tabla 'licencias' existe antes de inicializar SQLDatabase
 with engine.connect() as connection:
-    result = connection.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    result = connection.execute(text("SELECT name FROM sqlite_master WHERE type='table';"))
     tables = result.fetchall()
     st.write("Tablas en la base de datos:", tables)
 
