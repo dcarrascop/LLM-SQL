@@ -6,3 +6,4 @@ llama_index
 python-dotenv
 matplotlib
 plotly
+requests
