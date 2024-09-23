@@ -7,7 +7,7 @@ import os
 # Descargar el archivo desde Google Drive si no existe
 db_file = 'licencias.db'
 if not os.path.exists(db_file):
-    url = 'https://drive.google.com/file/d/17bXAOXt6nsP0Ch8KwZISiFK6vN4rvopV/view?usp=drive_link'  # Reemplaza con tu enlace de Google Drive
+    url = 'https://drive.google.com/uc?id=17bXAOXt6nsP0Ch8KwZISiFK6vN4rvopV'
     gdown.download(url, db_file, quiet=False)
 
 # Cargar la base de datos
